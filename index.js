@@ -75,7 +75,6 @@ async.series([
 var server = restify.createServer();
 
 server.use(restify.acceptParser(server.acceptable));
-server.use(CookieParser.parse);
 server.use(restify.bodyParser());
 server.use(restify.gzipResponse());
 server.use(restify.authorizationParser());
@@ -131,6 +130,11 @@ server.put('/status/restart', function(req,res,next) {
     });
 });
 
+
+server.post('/console/execute', function(req,res,next) {
+    MinecraftServer.exec(req.params.command);
+    res.send('success');
+});
 
 
 server.post("/",function(req,res,next) {

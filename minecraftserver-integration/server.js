@@ -49,11 +49,15 @@ server.removeListener = function(event, handler) {
     eventEmitter.removeListener(event, handler);
 };
 
-server.onLog = function(cb){
+server.onLog = function(cb) {
     server.proc.stdout.on('data', cb);
 };
-server.onErr = function(cb){
+server.onErr = function(cb) {
     server.proc.stderr.on('data', cb);
+};
+
+server.exec = function(cmd) {
+    server.proc.stdin.write(cmd + '\n');
 };
 
 
