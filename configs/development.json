@@ -17,6 +17,7 @@
   "minecraftserv": {
     "path": "files/MinecraftServer/",
     "FileName": "server.jar",
-    "AutoRestart": false
+    "AutoRestart": false,
+    "AutoStart": true
   }
 }

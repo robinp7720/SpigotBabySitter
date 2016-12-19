@@ -10,6 +10,7 @@ var MinecraftServer = require('./minecraftserver-integration/server.js');
 
 
 function startServer(callback) {
+    console.log();
     console.log("Starting server");
     console.log('---------------------------------');
 
@@ -66,9 +67,17 @@ async.series([
         }
     },
     setupMinecraftServer,
-    function() {
+    function(callback) {
         console.log('---------------------------------');
         console.log("Server preflight finished");
+        callback()
+    },
+    function(callback) {
+        if (config.minecraftserv.AutoStart) {
+            startServer(callback)
+        } else {
+            callback();
+        }
     }
 ]);
 
