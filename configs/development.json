@@ -18,6 +18,9 @@
     "path": "files/MinecraftServer/",
     "FileName": "server.jar",
     "AutoRestart": false,
-    "AutoStart": true
+    "AutoStart": true,
+    "worldsDir": "../worlds/",
+    "pluginsDir": "../plugins/",
+    "configDirectory": "../settings/"
   }
 }

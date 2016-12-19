@@ -30,6 +30,9 @@ function setupMinecraftServer(callback) {
     // Setup minecraft server
     MinecraftServer.path = config.minecraftserv.path;
     MinecraftServer.FileName = config.minecraftserv.FileName;
+    MinecraftServer.pluginsDir = config.minecraftserv.pluginsDir;
+    MinecraftServer.worldsDir = config.minecraftserv.worldsDir;
+    MinecraftServer.configDirectory = config.minecraftserv.configDirectory;
 
     MinecraftServer.on('start', function() {
         console.log("Server has been started successfully")

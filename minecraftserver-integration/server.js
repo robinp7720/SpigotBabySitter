@@ -12,11 +12,21 @@ server.proc = null;
 server.path = "files/MinecraftServer/";
 server.FileName = "server.jar";
 
+server.worldsDir = "../worlds/";
+server.pluginsDir = "../plugins/";
+server.configDirectory = "../settings/";
+
 
 server.start = function() {
     server.proc = spawn('java', [
-        '-jar',
-        server.FileName
+        '-Dcom.mojang.eula.agree=true',
+        '-jar', server.FileName,
+        '--world-dir', server.worldsDir,
+        '--plugins', server.pluginsDir,
+        '--bukkit-settings', server.configDirectory + "bukkit.yml",
+        '--commands-settings', server.configDirectory + "commands.yml",
+        '--config', server.configDirectory + "config.yml",
+        '--spigot-settings', server.configDirectory + "spigot.yml"
     ], {
         cwd: server.path
     });
