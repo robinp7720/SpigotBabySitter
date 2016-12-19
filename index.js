@@ -33,6 +33,8 @@ function setupMinecraftServer(callback) {
     MinecraftServer.pluginsDir = config.minecraftserv.pluginsDir;
     MinecraftServer.worldsDir = config.minecraftserv.worldsDir;
     MinecraftServer.configDirectory = config.minecraftserv.configDirectory;
+    MinecraftServer.maxRam = config.minecraftserv.maxRam;
+    MinecraftServer.minRam = config.minecraftserv.minRam;
 
     MinecraftServer.on('start', function() {
         console.log("Server has been started successfully")

@@ -17,6 +17,8 @@
   "minecraftserv": {
     "path": "files/MinecraftServer/",
     "FileName": "server.jar",
+    "minRam": "2G",
+    "maxRam": "4G",
     "AutoRestart": false,
     "AutoStart": true,
     "worldsDir": "../worlds/",

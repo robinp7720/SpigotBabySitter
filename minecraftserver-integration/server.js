@@ -12,6 +12,9 @@ server.proc = null;
 server.path = "files/MinecraftServer/";
 server.FileName = "server.jar";
 
+server.maxRam = "1G";
+server.minRam = "1G";
+
 server.worldsDir = "../worlds/";
 server.pluginsDir = "../plugins/";
 server.configDirectory = "../settings/";
@@ -20,6 +23,8 @@ server.configDirectory = "../settings/";
 server.start = function() {
     server.proc = spawn('java', [
         '-Dcom.mojang.eula.agree=true',
+        '-Xms' + server.minRam,
+        '-Xmx' + server.maxRam,
         '-jar', server.FileName,
         '--world-dir', server.worldsDir,
         '--plugins', server.pluginsDir,
