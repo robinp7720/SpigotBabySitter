@@ -1,13 +1,10 @@
-var restify = require('restify');
 var fs = require('fs');
 var async = require('async');
-var CookieParser = require('restify-cookies');
 var crypto = require('crypto');
 
 var config  = require('./configs/development.json');
 
 var MinecraftServer = require('./minecraftserver-integration/server.js');
-
 
 function startServer(callback) {
     console.log();
@@ -56,7 +53,7 @@ function setupMinecraftServer(callback) {
     callback();
 }
 
-// Start the server preflight
+// Start the server startup sequence
 
 async.series([
     function(callback) {
@@ -85,77 +82,3 @@ async.series([
         }
     }
 ]);
-
-var server = restify.createServer();
-
-server.use(restify.acceptParser(server.acceptable));
-server.use(restify.bodyParser());
-server.use(restify.gzipResponse());
-server.use(restify.authorizationParser());
-
-
-server.use(function (req, res, next) {
-    var users;
-    users = config.rest.authentication;
-
-    // Ensure that user is not anonymous; and
-    // That user exists; and
-    // That user password matches the record in the database.
-    if (req.username == 'anonymous' || !users[req.username] || req.authorization.basic.password !== users[req.username].password) {
-        next(new restify.NotAuthorizedError());
-    } else {
-        next();
-    }
-
-    next();
-});
-
-
-server.put('/status/start', function(req,res,next) {
-    if (MinecraftServer.proc == null) {
-        startServer(function () {
-            res.send("success");
-            return next();
-        });
-    } else {
-        res.send("Server already running");
-        return next();
-    }
-});
-
-server.put('/status/stop', function(req,res,next) {
-    MinecraftServer.once('stop', function() {
-        res.send("success");
-        return next();
-    });
-    MinecraftServer.stop();
-});
-
-server.put('/status/restart', function(req,res,next) {
-    MinecraftServer.stop(function() {
-        if (!config.minecraftserv.AutoRestart) {
-            startServer(function () {
-                res.send("Server restarted");
-                return next();
-            });
-        } else {
-            res.send("Server stopped");
-        }
-    });
-});
-
-
-server.post('/console/execute', function(req,res,next) {
-    MinecraftServer.exec(req.params.command);
-    res.send('success');
-});
-
-
-server.post("/",function(req,res,next) {
-    return next();
-});
-
-
-server.listen(config.rest.server.port, function() {
-    console.log('Cyanmin listening at %s', server.url);
-});
