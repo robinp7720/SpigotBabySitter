@@ -130,7 +130,8 @@ process.stdin.on('readable', function () {
             var command = chunk.substring(1, length);
 
             // Execute command
-            wrapperCommands[command]();
+            if (wrapperCommands[command])
+                wrapperCommands[command]();
         } else {
             // If command does not include a ! as the first character, consider it as a minecraft server command
             MinecraftServer.exec(chunk);
