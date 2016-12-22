@@ -22,11 +22,16 @@ buildtools.download = function(cwd,filename,cb) {
  * @param filename Filename of buildtools jar
  * @param cb run when buildtools exits
  */
-buildtools.compile = function(cwd,filename,cb) {
+buildtools.compile = function(cwd,filename,version,cb) {
+    if (cb == undefined) {
+        cb = version;
+        version = "latest";
+    }
+
     // Start BuildTools process
     var BuildToolsProc = spawn('java', [
-        '-jar',
-        filename
+        '-jar', filename,
+        '--rev', version
     ], {
         cwd: cwd
     });

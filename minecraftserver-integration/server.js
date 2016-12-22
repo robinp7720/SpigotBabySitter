@@ -21,33 +21,41 @@ server.configDirectory = "../settings/";
 
 
 server.start = function() {
-    server.proc = spawn('java', [
-        '-Dcom.mojang.eula.agree=true',
-        '-Xms' + server.minRam,
-        '-Xmx' + server.maxRam,
-        '-jar', server.FileName,
-        '--world-dir', server.worldsDir,
-        '--plugins', server.pluginsDir,
-        '--bukkit-settings', server.configDirectory + "bukkit.yml",
-        '--commands-settings', server.configDirectory + "commands.yml",
-        '--config', server.configDirectory + "config.yml",
-        '--spigot-settings', server.configDirectory + "spigot.yml"
-    ], {
-        cwd: server.path
-    });
+    if (server.proc == null) {
+        server.proc = spawn('java', [
+            '-Dcom.mojang.eula.agree=true',
+            '-Xms' + server.minRam,
+            '-Xmx' + server.maxRam,
+            '-jar', server.FileName,
+            '--world-dir', server.worldsDir,
+            '--plugins', server.pluginsDir,
+            '--bukkit-settings', server.configDirectory + "bukkit.yml",
+            '--commands-settings', server.configDirectory + "commands.yml",
+            '--config', server.configDirectory + "config.yml",
+            '--spigot-settings', server.configDirectory + "spigot.yml"
+        ], {
+            cwd: server.path
+        });
 
-    server.proc.on('exit', function() {
-        server.proc = null;
-        eventEmitter.emit('stop');
-    });
+        server.proc.on('exit', function () {
+            server.proc = null;
+            eventEmitter.emit('stop');
+        });
 
-    eventEmitter.emit('start');
+        eventEmitter.emit('start');
+    } else {
+        Console.log("Server is already running");
+    }
 };
 
 server.stop = function(cb) {
-    server.proc.stdin.write('stop\n');
-    if (cb != undefined) {
-        eventEmitter.once("stop", cb);
+    if (server.proc != null) {
+        server.proc.stdin.write('stop\n');
+        if (cb != undefined) {
+            eventEmitter.once("stop", cb);
+        }
+    } else {
+        console.log("Server is not running")
     }
 };
 
