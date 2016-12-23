@@ -87,7 +87,7 @@ async.series([
 ]);
 
 var wrapperCommands = {
-    "stopwrapper": function () {
+    "stopwrapper": function (args) {
         config.minecraftserv.AutoRestart = false;
         MinecraftServer.stop(function () {
                 console.log("Killing wrapper now");
@@ -95,29 +95,38 @@ var wrapperCommands = {
             }
         );
     },
-    "enablerestart": function () {
-        config.minecraftserv.AutoRestart = true;
+    "set": function(args) {
+        if (args[2] == "True") {
+            args[2] = true;
+        } else if (args[2] == "False") {
+            args[2] = false;
+        }
+        config.minecraftserv[args[1]] = args[2];
     },
-    "disablerestart": function () {
-        config.minecraftserv.AutoRestart = false;
-    },
-    "stop": function () {
+    "stop": function (args) {
         MinecraftServer.stop();
     },
-    "start": function () {
+    "start": function (args) {
         startServer();
     },
-    "restart": function () {
+    "restart": function (args) {
         if (config.minecraftserv.AutoRestart == false) {
             startServer(function () {
                 console.log("Server has been restarted")
             });
         }
     },
-    "update": function() {
+    "update": function(args) {
         require('./app/boot/buildtools.js').compileServer(function() {
             console.log("Sever has been updated");
         });
+    },
+    "install": function(args) {
+        var source = args[1];
+        if (source == "jenkins") {
+            var JenkinsPluginManager = require('./plugin-manager/jenkins');
+            JenkinsPluginManager.install(args[2],args[3],null,config.minecraftserv.path+config.minecraftserv.pluginsDir);
+        }
     }
 };
 
@@ -127,11 +136,11 @@ process.stdin.on('readable', function () {
         if (chunk.substring(0, 1) == "!") {
             // Remove newline char and ! from input
             var length = chunk.length - 1;
-            var command = chunk.substring(1, length);
+            var command = chunk.substring(1, length).split(' ');
 
             // Execute command
-            if (wrapperCommands[command])
-                wrapperCommands[command]();
+            if (wrapperCommands[command[0]])
+                wrapperCommands[command[0]](command);
         } else {
             // If command does not include a ! as the first character, consider it as a minecraft server command
             MinecraftServer.exec(chunk);

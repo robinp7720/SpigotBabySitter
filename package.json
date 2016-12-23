@@ -6,6 +6,7 @@
     "request": "^2.75.0",
     "restify": "^4.1.1",
     "restify-cookies": "^0.2.2",
-    "restify-memory-session": "0.0.6"
+    "restify-memory-session": "0.0.6",
+    "jenkins-api": "latest"
   }
 }
