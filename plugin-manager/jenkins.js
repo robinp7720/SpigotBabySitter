@@ -1,6 +1,7 @@
 var jenkinsapi = require('jenkins-api');
 var request = require('request');
 var fs = require('fs');
+var async = require("async");
 
 var JenkinsPluginManager = {
     "install": function (url, name, version, pluginPath, cb) {
@@ -36,7 +37,7 @@ var JenkinsPluginManager = {
 
                 console.log("Plugin added to plugin list");
 
-                this.download(url, name, version, pluginPath, cb);
+                JenkinsPluginManager.download(url, name, version, pluginPath, cb);
             });
         }
     },
@@ -52,10 +53,10 @@ var JenkinsPluginManager = {
                 return console.log(err);
             }
             // Loop through all build artifacts and attempt to find the actual plugin
-            for (var item in data['artifacts']) {
-                item = data['artifacts'][item];
-                // If the artifact name includes either sources or javadocs, assume that it is not the plugin jar
-                if (item["fileName"].indexOf('sources') == -1 && item["fileName"].indexOf('javadoc') == -1) {
+            async.eachSeries(data['artifacts'], function iteratee(item, callback) {
+                if (item["fileName"].indexOf('sources') == -1 &&
+                    item["fileName"].indexOf('javadoc') == -1 &&
+                    item["fileName"].indexOf('original') == -1) {
                     // Generate the download url based on the artifacts url, job name and base url
                     var downloadUrl = url + "/job/" + name + "/lastBuild/artifact/" + item['relativePath'];
                     console.log("Downloading " + item["fileName"] + " from " + downloadUrl);
@@ -63,10 +64,14 @@ var JenkinsPluginManager = {
                     request(downloadUrl, function () {
                         console.log("Downloaded " + item["fileName"] + " from " + downloadUrl);
                         console.log("Saved to " + pluginPath + item["fileName"]);
-                        cb();
+                        callback();
                     }).pipe(fs.createWriteStream(pluginPath + item["fileName"]));
+                } else {
+                    callback();
                 }
-            }
+            },function() {
+                cb();
+            });
         });
     }
 };

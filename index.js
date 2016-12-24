@@ -62,6 +62,7 @@ function setupMinecraftServer(callback) {
 }
 
 function UpdatePlugins(cb) {
+    var plugins = require("./configs/plugins.json");
     async.eachSeries(plugins, function iteratee(plugin, callback) {
         if (plugin.source == "jenkins") {
             var JenkinsPluginManager = require('./plugin-manager/jenkins');
@@ -147,16 +148,19 @@ var wrapperCommands = {
         var source = args[1];
         if (source == "jenkins") {
             var JenkinsPluginManager = require('./plugin-manager/jenkins');
-            JenkinsPluginManager.install(args[2],args[3],null,config.minecraftserv.path+config.minecraftserv.pluginsDir);
+            JenkinsPluginManager.install(args[2],args[3],null,config.minecraftserv.path+config.minecraftserv.pluginsDir, function() {
+                console.log("Plugin installed!")
+            });
         } else if (source == "spigot") {
             var SpigotPluginManager = require('./plugin-manager/spigot');
-            SpigotPluginManager.install(args[2],config.minecraftserv.path+config.minecraftserv.pluginsDir);
+            SpigotPluginManager.install(args[2],config.minecraftserv.path+config.minecraftserv.pluginsDir, function() {
+                console.log("Plugin installed!")
+            });
         }
     },
     "plugins": function(args) {
-        var plugins = require("./configs/plugins.json");
-
         if (args[1] == "list") {
+            var plugins = require("./configs/plugins.json");
             for (var i in plugins) {
                 var plugin = plugins[i];
                 console.log(plugin);

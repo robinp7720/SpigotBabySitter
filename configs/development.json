@@ -20,9 +20,25 @@
     "minRam": "2G",
     "maxRam": "4G",
     "AutoRestart": false,
-    "AutoStart": true,
+    "AutoStart": false,
     "worldsDir": "../worlds/",
     "pluginsDir": "../plugins/",
     "configDirectory": "../settings/"
-  }
+  },
+  "schedule": [
+    {
+      "time": "1:00",
+      "actions": [
+        {"action": "stop"},
+        {
+          "action": "backup",
+          "items": ["worlds","plugins","configs","server"]
+        },
+        {
+          "action": "updatePlugins"
+        },
+        {"action": "start"}
+      ]
+    }
+  ]
 }
