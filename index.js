@@ -6,6 +6,11 @@ var config = require('./configs/development.json');
 
 var MinecraftServer = require('./minecraftserver-integration/server.js');
 
+// This line make nodejs not verify ssl certs. I have experienced issues with some jenkins servers which use Lets Encrypt certs which aren't supported by NodeJS
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+
+// Set encoding type of inputs
 process.stdin.setEncoding('utf8');
 
 function startServer(callback) {
@@ -116,7 +121,7 @@ var wrapperCommands = {
             });
         }
     },
-    "update": function(args) {
+    "recompile": function(args) {
         require('./app/boot/buildtools.js').compileServer(function() {
             console.log("Sever has been updated");
         });
@@ -126,6 +131,24 @@ var wrapperCommands = {
         if (source == "jenkins") {
             var JenkinsPluginManager = require('./plugin-manager/jenkins');
             JenkinsPluginManager.install(args[2],args[3],null,config.minecraftserv.path+config.minecraftserv.pluginsDir);
+        }
+    },
+    "plugins": function(args) {
+        var plugins = require("./configs/plugins.json");
+
+        if (args[1] == "list") {
+            for (i in plugins) {
+                var plugin = plugins[i];
+                console.log(plugin);
+            }
+        } else if (args[1] == "update") {
+            for (i in plugins) {
+                var plugin = plugins[i];
+                if (plugin.source == "jenkins") {
+                    var JenkinsPluginManager = require('./plugin-manager/jenkins');
+                    JenkinsPluginManager.download(plugin.repo, plugin.job, null, config.minecraftserv.path + config.minecraftserv.pluginsDir);
+                }
+            }
         }
     }
 };
