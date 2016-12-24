@@ -115,11 +115,13 @@ var wrapperCommands = {
         startServer();
     },
     "restart": function (args) {
-        if (config.minecraftserv.AutoRestart == false) {
-            startServer(function () {
-                console.log("Server has been restarted")
-            });
-        }
+        MinecraftServer.stop(function() {
+            if (config.minecraftserv.AutoRestart == false) {
+                startServer(function () {
+                    console.log("Server has been restarted")
+                });
+            }
+        });
     },
     "recompile": function(args) {
         require('./app/boot/buildtools.js').compileServer(function() {
@@ -131,22 +133,29 @@ var wrapperCommands = {
         if (source == "jenkins") {
             var JenkinsPluginManager = require('./plugin-manager/jenkins');
             JenkinsPluginManager.install(args[2],args[3],null,config.minecraftserv.path+config.minecraftserv.pluginsDir);
+        } else if (source == "spigot") {
+            var SpigotPluginManager = require('./plugin-manager/spigot');
+            SpigotPluginManager.install(args[2],config.minecraftserv.path+config.minecraftserv.pluginsDir);
         }
     },
     "plugins": function(args) {
         var plugins = require("./configs/plugins.json");
 
         if (args[1] == "list") {
-            for (i in plugins) {
+            for (var i in plugins) {
                 var plugin = plugins[i];
                 console.log(plugin);
             }
         } else if (args[1] == "update") {
-            for (i in plugins) {
+            for (var i in plugins) {
                 var plugin = plugins[i];
                 if (plugin.source == "jenkins") {
                     var JenkinsPluginManager = require('./plugin-manager/jenkins');
                     JenkinsPluginManager.download(plugin.repo, plugin.job, null, config.minecraftserv.path + config.minecraftserv.pluginsDir);
+                }
+                if (plugin.source == "spigot") {
+                    var SpigotPluginManager = require('./plugin-manager/spigot');
+                    SpigotPluginManager.download(plugin.id,config.minecraftserv.path+config.minecraftserv.pluginsDir);
                 }
             }
         }

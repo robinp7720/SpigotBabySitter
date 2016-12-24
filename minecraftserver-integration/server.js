@@ -44,7 +44,7 @@ server.start = function() {
 
         eventEmitter.emit('start');
     } else {
-        Console.log("Server is already running");
+        console.log("Server is already running");
     }
 };
 
@@ -80,7 +80,11 @@ server.onErr = function(cb) {
 };
 
 server.exec = function(cmd) {
-    server.proc.stdin.write(cmd + '\n');
+    if (server.proc != null) {
+        server.proc.stdin.write(cmd + '\n');
+    } else {
+        console.log("Server is not running")
+    }
 };
 
 
