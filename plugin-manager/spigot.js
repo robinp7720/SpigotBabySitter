@@ -3,7 +3,7 @@ var cloudscraper = require('cloudscraper');
 var fs = require('fs');
 
 var SpigotPluginManager = {
-    "install": function (id, pluginPath) {
+    "install": function (id, pluginPath,cb) {
         var plugins = require("../configs/plugins.json");
         var install = true;
 
@@ -38,11 +38,12 @@ var SpigotPluginManager = {
                     // Write new file
                     fs.writeFile(__dirname + "/../configs/plugins.json", JSON.stringify(plugins), function (err) {
                         if (err) {
+                            cb();
                             return console.log(err);
                         }
                         console.log("Plugin added to plugin list");
 
-                        SpigotPluginManager.download(id, pluginPath);
+                        SpigotPluginManager.download(id, pluginPath,cb);
                     });
                 }
             } else {
@@ -51,10 +52,11 @@ var SpigotPluginManager = {
                 } else {
                     console.log(plugin['name'] + " uses an external source. It cannot be downloaded")
                 }
+                cb();
             }
         });
     },
-    "download": function (id, pluginPath) {
+    "download": function (id, pluginPath,cb) {
         // Get information about plugin and if it's possible to download and install it
         request("https://api.spiget.org/v2/resources/"+id, function(error, response, body) {
             var plugin = JSON.parse(body);
@@ -69,13 +71,15 @@ var SpigotPluginManager = {
                     encoding: null
                 }, function(err, response, body) {
                     if (error) {
-                        console.log('Error occurred');
+                        cb();
+                        return console.log('Error occurred');
                     } else {
                         console.log("Downloaded " + plugin['name'] + " from " + downloadUrl);
                         var wstream = fs.createWriteStream(pluginPath + plugin['name']+".jar");
                         wstream.write(body);
                         wstream.end();
                         console.log("Saved to " + pluginPath + plugin['name']+".jar");
+                        cb();
                     }
                 });
             } else {
@@ -84,6 +88,7 @@ var SpigotPluginManager = {
                 } else {
                     console.log(plugin['name'] + " uses an external source. It cannot be downloaded")
                 }
+                cb();
             }
         });
     }

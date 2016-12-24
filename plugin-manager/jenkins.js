@@ -3,7 +3,7 @@ var request = require('request');
 var fs = require('fs');
 
 var JenkinsPluginManager = {
-    "install": function (url, name, version, pluginPath) {
+    "install": function (url, name, version, pluginPath, cb) {
         var plugins = require("../configs/plugins.json");
         var install = true;
 
@@ -30,21 +30,24 @@ var JenkinsPluginManager = {
             // Write new file
             fs.writeFile(__dirname + "/../configs/plugins.json", JSON.stringify(plugins), function (err) {
                 if (err) {
+                    cb();
                     return console.log(err);
                 }
 
                 console.log("Plugin added to plugin list");
-            });
 
-            this.download(url, name, version, pluginPath);
+                this.download(url, name, version, pluginPath, cb);
+            });
         }
     },
-    "download": function (url, name, version, pluginPath) {
+    "download": function (url, name, version, pluginPath, cb) {
         var jenkins = jenkinsapi.init(url);
 
         // Get latest build from Jenkins
         jenkins.last_build_info(name, function (err, data) {
             if (err) {
+                cb();
+
                 // If error then stop and report to user
                 return console.log(err);
             }
@@ -60,6 +63,7 @@ var JenkinsPluginManager = {
                     request(downloadUrl, function () {
                         console.log("Downloaded " + item["fileName"] + " from " + downloadUrl);
                         console.log("Saved to " + pluginPath + item["fileName"]);
+                        cb();
                     }).pipe(fs.createWriteStream(pluginPath + item["fileName"]));
                 }
             }

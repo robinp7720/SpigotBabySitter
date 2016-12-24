@@ -61,6 +61,21 @@ function setupMinecraftServer(callback) {
     callback();
 }
 
+function UpdatePlugins(cb) {
+    async.eachSeries(plugins, function iteratee(plugin, callback) {
+        if (plugin.source == "jenkins") {
+            var JenkinsPluginManager = require('./plugin-manager/jenkins');
+            JenkinsPluginManager.download(plugin.repo, plugin.job, null, config.minecraftserv.path + config.minecraftserv.pluginsDir,callback);
+        }
+        if (plugin.source == "spigot") {
+            var SpigotPluginManager = require('./plugin-manager/spigot');
+            SpigotPluginManager.download(plugin.id,config.minecraftserv.path+config.minecraftserv.pluginsDir,callback);
+        }
+    },function() {
+        cb();
+    });
+}
+
 // Start the server startup sequence
 
 async.series([
@@ -147,17 +162,9 @@ var wrapperCommands = {
                 console.log(plugin);
             }
         } else if (args[1] == "update") {
-            for (var i in plugins) {
-                var plugin = plugins[i];
-                if (plugin.source == "jenkins") {
-                    var JenkinsPluginManager = require('./plugin-manager/jenkins');
-                    JenkinsPluginManager.download(plugin.repo, plugin.job, null, config.minecraftserv.path + config.minecraftserv.pluginsDir);
-                }
-                if (plugin.source == "spigot") {
-                    var SpigotPluginManager = require('./plugin-manager/spigot');
-                    SpigotPluginManager.download(plugin.id,config.minecraftserv.path+config.minecraftserv.pluginsDir);
-                }
-            }
+            UpdatePlugins(function() {
+                console.log("Plugin update finished");
+            })
         }
     }
 };
