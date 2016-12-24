@@ -20,7 +20,7 @@ server.pluginsDir = "../plugins/";
 server.configDirectory = "../settings/";
 
 
-server.start = function() {
+server.start = function(cb) {
     if (server.proc == null) {
         server.proc = spawn('java', [
             '-Dcom.mojang.eula.agree=true',
@@ -46,6 +46,8 @@ server.start = function() {
     } else {
         console.log("Server is already running");
     }
+    if (cb !== undefined)
+        cb();
 };
 
 server.stop = function(cb) {
@@ -56,6 +58,8 @@ server.stop = function(cb) {
         }
     } else {
         console.log("Server is not running")
+        if (cb != undefined)
+            cb();
     }
 };
 

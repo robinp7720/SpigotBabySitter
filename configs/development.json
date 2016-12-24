@@ -27,17 +27,31 @@
   },
   "schedule": [
     {
-      "time": "1:00",
+      "every": 7200,
       "actions": [
-        {"action": "stop"},
+        {
+          "action": "command",
+          "command": "say Server going for restart in 10 seconds",
+          "wait": 10
+        },
+        {
+          "action": "stop"
+        },
         {
           "action": "backup",
-          "items": ["worlds","plugins","configs","server"]
+          "items": [
+            "worlds",
+            "plugins",
+            "configs",
+            "server"
+          ]
         },
         {
           "action": "updatePlugins"
         },
-        {"action": "start"}
+        {
+          "action": "start"
+        }
       ]
     }
   ]

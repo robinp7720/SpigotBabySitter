@@ -13,7 +13,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 // Set encoding type of inputs
 process.stdin.setEncoding('utf8');
 
-function startServer(callback) {
+function startServer(cb) {
     console.log();
     console.log("Starting server");
     console.log('---------------------------------');
@@ -24,8 +24,8 @@ function startServer(callback) {
         console.log(data.toString().replace("\n", ""));
     });
 
-    if (callback != undefined)
-        callback();
+    if (cb !== undefined)
+        cb();
 }
 
 function setupMinecraftServer(callback) {
@@ -107,6 +107,7 @@ async.series([
     }
 ]);
 
+// Define commands available for use
 var wrapperCommands = {
     "stopwrapper": function (args) {
         config.minecraftserv.AutoRestart = false;
@@ -173,6 +174,8 @@ var wrapperCommands = {
     }
 };
 
+
+// Listen for input on stdin
 process.stdin.on('readable', function () {
     var chunk = process.stdin.read();
     if (chunk !== null) {
@@ -190,3 +193,43 @@ process.stdin.on('readable', function () {
         }
     }
 });
+
+function startScheduler(id) {
+    console.log("Starting scheduler "+id);
+    var item = config.schedule[id];
+    setInterval(function() {
+        var actions = item.actions;
+        async.eachSeries(actions, function iteratee(action, callback) {
+            var ActionType = action.action;
+            console.log(ActionType);
+
+            if (ActionType == "start") {
+                startServer(callback);
+            }
+            else if (ActionType == "stop") {
+                MinecraftServer.stop(callback);
+            }
+            else if (ActionType == "updatePlugins") {
+                UpdatePlugins(callback);
+            }
+            else if (ActionType == "command") {
+                MinecraftServer.exec(action.command);
+                setTimeout(function () {
+                    callback()
+                }, action.wait * 1000);
+            }
+            else {
+                setTimeout(function () {
+                    callback()
+                }, 1000);
+            }
+        },function() {
+
+        });
+    },item.every*1000);
+}
+
+// Setup scheduler
+for (var i in config.schedule) {
+    startScheduler(i);
+}
