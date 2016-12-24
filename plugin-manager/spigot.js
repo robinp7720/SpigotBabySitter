@@ -1,4 +1,5 @@
 var request = require('request');
+var cloudscraper = require('cloudscraper');
 var fs = require('fs');
 
 var SpigotPluginManager = {
@@ -63,10 +64,20 @@ var SpigotPluginManager = {
             if (plugin['external'] == false) {
                 var downloadUrl = "https://www.spigotmc.org/" + plugin.file.url;
                 console.log("Downloading " + downloadUrl);
-                request(downloadUrl, function () {
-                    console.log("Downloaded " + plugin['name'] + " from " + downloadUrl);
-                    console.log("Saved to " + pluginPath + plugin['name']+".jar");
-                }).pipe(fs.createWriteStream(pluginPath + plugin['name']+".jar"));
+                cloudscraper.request({method: 'GET',
+                    url: downloadUrl,
+                    encoding: null
+                }, function(err, response, body) {
+                    if (error) {
+                        console.log('Error occurred');
+                    } else {
+                        console.log("Downloaded " + plugin['name'] + " from " + downloadUrl);
+                        var wstream = fs.createWriteStream(pluginPath + plugin['name']+".jar");
+                        wstream.write(body);
+                        wstream.end();
+                        console.log("Saved to " + pluginPath + plugin['name']+".jar");
+                    }
+                });
             } else {
                 if (plugin['name'] == undefined){
                     console.log("Plugin not found");
