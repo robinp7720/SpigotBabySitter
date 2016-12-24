@@ -1,4 +1,7 @@
 ## SpigotBabySitter, What is it?
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b7dae13cf2a44ca0b7e8fa26c30cc976)](https://www.codacy.com/app/Zeyphros/SpigotBabySitter?utm_source=github.com&utm_medium=referral&utm_content=robinp7720/SpigotBabySitter&utm_campaign=badger)
+
 SpigotBabySitter is a simple, yet powerful minecraft server wrapper intended to be used with spigot. It implements many features such as a plugin manager, restarts, crash detection, custom directory layouts, automatic backups and restores.
 
 ## This seams awesome! How do I install it?
