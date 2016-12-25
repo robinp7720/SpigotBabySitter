@@ -4,6 +4,13 @@ var crypto = require('crypto');
 
 var config = require('./configs/development.json');
 
+// Allow for color coded output
+var colors = require('colors');
+
+// Set color theme
+colors.setTheme(config.colors);
+
+
 var MinecraftServer = require('./minecraftserver-integration/server.js');
 
 // This line make nodejs not verify ssl certs. I have experienced issues with some jenkins servers which use Lets Encrypt certs which aren't supported by NodeJS
@@ -15,13 +22,21 @@ process.stdin.setEncoding('utf8');
 
 function startServer(cb) {
     console.log();
-    console.log("Starting server");
-    console.log('---------------------------------');
+    console.log("Starting server".notification);
+    console.log('---------------------------------'.notification);
 
     MinecraftServer.start();
 
     MinecraftServer.onLog(function (data) {
-        console.log(data.toString().replace("\n", ""));
+        var log = data.toString().replace("\n", "");
+        if (log.indexOf("WARN") > -1)
+            log = log.warn;
+        if (log.indexOf("ERROR") > -1)
+            log = log.error;
+        console.log(log);
+    });
+    MinecraftServer.onErr(function (data) {
+        console.log(data.toString().replace("\n", "").error);
     });
 
     if (cb !== undefined)
@@ -30,7 +45,7 @@ function startServer(cb) {
 
 function setupMinecraftServer(callback) {
 
-    console.log("Setting up server wrapper");
+    console.log("Setting up server wrapper".notification);
 
     // Setup minecraft server
     MinecraftServer.path = config.minecraftserv.path;
@@ -42,18 +57,18 @@ function setupMinecraftServer(callback) {
     MinecraftServer.minRam = config.minecraftserv.minRam;
 
     MinecraftServer.on('start', function () {
-        console.log("Server has been started successfully")
+        console.log("Server has been started successfully".notification)
     });
 
     MinecraftServer.on("stop", function () {
 
         // Print to console that the server has been stopped
-        console.log("Server has been stopped successfully");
+        console.log("Server has been stopped successfully".notification);
 
         // If auto restart is enabled, restart the server
         if (config.minecraftserv.AutoRestart) {
             startServer(function () {
-                console.log("Server started automatically")
+                console.log("Server started automatically".notification)
             });
         }
     });
@@ -81,21 +96,21 @@ function UpdatePlugins(cb) {
 
 async.series([
     function (callback) {
-        console.log("Setting up server");
-        console.log('---------------------------------');
+        console.log("Setting up server".notification);
+        console.log('---------------------------------'.notification);
 
         // Download and run buildtools
         if (config.buildtools.run) {
             require('./app/boot/buildtools.js').compileServer(callback)
         } else {
-            console.log("Skipping buildtools as it is turned off in config");
+            console.log("Skipping buildtools as it is turned off in config".notification);
             callback();
         }
     },
     setupMinecraftServer,
     function (callback) {
-        console.log('---------------------------------');
-        console.log("Server preflight finished");
+        console.log('---------------------------------'.notification);
+        console.log("Server preflight finished".notification);
         callback()
     },
     function (callback) {
@@ -112,7 +127,7 @@ var wrapperCommands = {
     "stopwrapper": function (args) {
         config.minecraftserv.AutoRestart = false;
         MinecraftServer.stop(function () {
-                console.log("Killing wrapper now");
+                console.log("Killing wrapper now".notification);
                 process.kill(process.pid);
             }
         );
@@ -135,14 +150,14 @@ var wrapperCommands = {
         MinecraftServer.stop(function() {
             if (config.minecraftserv.AutoRestart == false) {
                 startServer(function () {
-                    console.log("Server has been restarted")
+                    console.log("Server has been restarted".notification)
                 });
             }
         });
     },
     "recompile": function(args) {
         require('./app/boot/buildtools.js').compileServer(function() {
-            console.log("Sever has been updated");
+            console.log("Sever has been updated".notification);
         });
     },
     "install": function(args) {
@@ -150,12 +165,12 @@ var wrapperCommands = {
         if (source == "jenkins") {
             var JenkinsPluginManager = require('./plugin-manager/jenkins');
             JenkinsPluginManager.install(args[2],args[3],null,config.minecraftserv.path+config.minecraftserv.pluginsDir, function() {
-                console.log("Plugin installed!")
+                console.log("Plugin installed!".notification)
             });
         } else if (source == "spigot") {
             var SpigotPluginManager = require('./plugin-manager/spigot');
             SpigotPluginManager.install(args[2],config.minecraftserv.path+config.minecraftserv.pluginsDir, function() {
-                console.log("Plugin installed!")
+                console.log("Plugin installed!".notification)
             });
         }
     },
@@ -195,7 +210,7 @@ process.stdin.on('readable', function () {
 });
 
 function startScheduler(id) {
-    console.log("Starting scheduler "+id);
+    console.log("Starting scheduler ".notification+id.notification);
     var item = config.schedule[id];
     setInterval(function() {
         var actions = item.actions;

@@ -1,6 +1,14 @@
 var request = require('request');
 var fs = require('fs');
 
+var config  = require('../configs/development.json');
+
+// Allow for color coded output
+var colors = require('colors');
+
+// Set color theme
+colors.setTheme(config.colors);
+
 var spawn = require('child_process').spawn;
 
 var buildtools = {};
@@ -38,12 +46,15 @@ buildtools.compile = function(cwd,filename,version,cb) {
 
     // Log stdout
     BuildToolsProc.stdout.on('data', function(data) {
-        console.log('[BuildTools]', data.toString().replace("\n",""));
+        var log = data.toString().replace("\n","");
+        if (log.indexOf("WARN") > -1)
+            log = log.warn;
+        console.log('[BuildTools]'.buildtools, log);
     });
 
     // Log stderr
     BuildToolsProc.stderr.on('data', function(data) {
-        console.error('[BuildTools]', data.toString().replace("\n",""));
+        console.error('[BuildTools]'.buildtools, data.toString().replace("\n","").error);
     });
 
     // Broadcast when finished

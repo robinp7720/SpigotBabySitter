@@ -25,6 +25,20 @@
     "pluginsDir": "../plugins/",
     "configDirectory": "../settings/"
   },
+  "colors": {
+    "silly": "rainbow",
+    "input": "grey",
+    "verbose": "cyan",
+    "prompt": "grey",
+    "info": "green",
+    "data": "grey",
+    "help": "cyan",
+    "warn": "yellow",
+    "debug": "blue",
+    "error": "red",
+    "notification": "cyan",
+    "buildtools": "blue"
+  },
   "schedule": [
     {
       "every": 7200,

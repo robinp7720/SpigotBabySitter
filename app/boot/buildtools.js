@@ -3,19 +3,26 @@ var BuildTools = require('../../buildtools-integration/buildtools.js');
 var config  = require('../../configs/development.json');
 var fs = require('fs');
 
+// Allow for color coded output
+var colors = require('colors');
+
+// Set color theme
+colors.setTheme(config.colors);
+
+
 module.exports = {
     compileServer: function (callback) {
         async.series([
             function (callback) {
-                console.log("Downloading latest buildtools");
+                console.log("Downloading latest buildtools".notification);
                 BuildTools.download(config.buildtools.path, config.buildtools.FileName, function () {
-                    console.log("BuildTools has been downloaded");
+                    console.log("BuildTools has been downloaded".notification);
                     callback();
                 });
             },
             function (callback) {
                 BuildTools.compile(config.buildtools.path, config.buildtools.FileName, function () {
-                    console.log("Server has been compiled");
+                    console.log("Server has been compiled".notification);
 
                     fs.readdir(config.buildtools.path, function (err, files) {
                        var fileName = files.find(function(element){
