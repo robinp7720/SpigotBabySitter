@@ -60,7 +60,7 @@ var JenkinsPluginManager = {
             for (var i in plugins) {
                 var plugin = plugins[i];
                 if (plugin.source == "jenkins" && plugin.repo == url && plugin.job == name) {
-                    if (data.timestamp > plugin.timestamp) {
+                    if (data.timestamp != plugin.timestamp) {
                         console.log("Update found for "+data['fullDisplayName'])
                     } else {
                         console.log("No update found for "+data['fullDisplayName']);
