@@ -24,7 +24,8 @@ var JenkinsPluginManager = {
                 {
                     "source": "jenkins",
                     "repo": url,
-                    "job": name
+                    "job": name,
+                    "timestamp": 0
                 }
             );
 
@@ -52,6 +53,30 @@ var JenkinsPluginManager = {
                 // If error then stop and report to user
                 return console.log(err);
             }
+
+
+            // Find plugin in plugins list to update version number
+            var plugins = require("../configs/plugins.json");
+            for (var i in plugins) {
+                var plugin = plugins[i];
+                if (plugin.source == "jenkins" && plugin.repo == url && plugin.job == name) {
+                    if (data.timestamp > plugin.timestamp) {
+                        console.log("Update found for "+data['fullDisplayName'])
+                    } else {
+                        console.log("No update found for "+data['fullDisplayName']);
+                        cb();
+                        return false;
+                    }
+                    plugins[i].timestamp = data.timestamp;
+                    break;
+                }
+            }
+            // Write to file
+            fs.writeFile(__dirname + "/../configs/plugins.json", JSON.stringify(plugins), function() {
+                console.log("New version written to config file")
+            });
+
+
             // Loop through all build artifacts and attempt to find the actual plugin
             async.eachSeries(data['artifacts'], function iteratee(item, callback) {
                 if (item["fileName"].indexOf('sources') == -1 &&

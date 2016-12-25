@@ -31,7 +31,8 @@ var SpigotPluginManager = {
                         {
                             "source": "spigot",
                             "id": plugin["id"],
-                            "name": plugin["name"]
+                            "name": plugin["name"],
+                            "version": 0
                         }
                     );
 
@@ -63,6 +64,27 @@ var SpigotPluginManager = {
             if (plugin[0] != undefined) {
                 plugin = plugin[0];
             }
+
+            var pluginList = require("../configs/plugins.json");
+            for (var i in pluginList) {
+                var pluginEntry = pluginList[i];
+                if (pluginEntry.source == "spigot" && pluginEntry.id == plugin["id"]) {
+                    if (plugin.version.id > pluginEntry.version) {
+                        console.log("Update found for "+plugin['name'])
+                    } else {
+                        console.log("No update found for "+plugin['name']);
+                        cb();
+                        return false;
+                    }
+                    pluginList[i].version = plugin.version.id;
+                    break;
+                }
+            }
+            // Write to file
+            fs.writeFile(__dirname + "/../configs/plugins.json", JSON.stringify(pluginList), function() {
+
+            });
+
             if (plugin['external'] == false) {
                 var downloadUrl = "https://www.spigotmc.org/" + plugin.file.url;
                 console.log("Downloading " + downloadUrl);
