@@ -7,7 +7,9 @@ SpigotBabySitter is an extremely easy to use minecraft server wrapper which make
 Instalation of SpigotBabySitter is extremely easy. First you will need to have NodeJS and NPM installed. You can follow the official NodeJS installation guide here: https://nodejs.org/en/download/package-manager/
 
 After you have NodeJS and npm installed, you can clone SpigotBabySitter.   
-```git clone https://github.com/robinp7720/SpigotBabySitter.git ~/SpigotBabySitter```   
+```
+git clone https://github.com/robinp7720/SpigotBabySitter.git ~/SpigotBabySitter
+```   
 Now you need to install the (rather large amount of) dependancies for SpigotBabySitter using npm.   
 ```
 cd ~/SpigotBabySitter; npm install
