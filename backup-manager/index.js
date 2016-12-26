@@ -43,27 +43,30 @@ var backupManager = {
             console.log("Backing up "+item+"...");
 
             var args = '-cf';
-            var fileType = '.tar';
+            var fileExtension = '.tar';
+
             if (this.compress) {
                 args = '-czf';
-                fileType = '.tar.gz';
+                fileExtension = '.tar.gz';
             }
+            var fileName = "backup"+fileExtension;
+            var path = "./";
 
             if (item == "plugins") {
-                var fileName = backupManager.backupDir+"/plugins/"+new Date().getTime() + fileType;
-                var path = backupManager.pluginsDir;
+                fileName = backupManager.backupDir+"/plugins/"+new Date().getTime() + fileExtension;
+                path = backupManager.pluginsDir;
             }
             else if (item == "worlds") {
-                var fileName = backupManager.backupDir+"/worlds/"+new Date().getTime() + fileType;
-                var path = backupManager.worldsDir;
+                fileName = backupManager.backupDir+"/worlds/"+new Date().getTime() + fileExtension;
+                path = backupManager.worldsDir;
             }
             else if (item == "server") {
-                var fileName = backupManager.backupDir+"/MinecraftServer/"+new Date().getTime() + fileType;
-                var path = backupManager.serverDir;
+                fileName = backupManager.backupDir+"/MinecraftServer/"+new Date().getTime() + fileExtension;
+                path = backupManager.serverDir;
             }
             else if (item == "settings") {
-                var fileName = backupManager.backupDir+"/settings/"+new Date().getTime() + fileType;
-                var path = backupManager.settingsDir;
+                fileName = backupManager.backupDir+"/settings/"+new Date().getTime() + fileExtension;
+                path = backupManager.settingsDir;
             }
 
             var tarProc = spawn('tar', [
