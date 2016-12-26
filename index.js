@@ -4,6 +4,7 @@ var crypto = require('crypto');
 var moment = require('moment');
 
 var config = require('./configs/config.json');
+var buildtools = require('./buildtools-integration/buildtools.js');
 
 // Allow for color coded output
 var colors = require('colors');
@@ -102,7 +103,7 @@ async.series([
 
         // Download and run buildtools
         if (config.buildtools.run) {
-            require('./app/boot/buildtools.js').compileServer(callback)
+            buildtools.run(callback)
         } else {
             console.log("Skipping buildtools as it is turned off in config".notification);
             callback();
@@ -157,7 +158,7 @@ var wrapperCommands = {
         });
     },
     "recompile": function(args) {
-        require('./app/boot/buildtools.js').compileServer(function() {
+        buildtools.run(function() {
             console.log("Sever has been updated".notification);
         });
     },

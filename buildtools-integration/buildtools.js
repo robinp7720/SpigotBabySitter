@@ -1,5 +1,6 @@
 var request = require('request');
 var fs = require('fs');
+var async = require('async');
 
 var config  = require('../configs/config.json');
 
@@ -30,11 +31,6 @@ buildtools.download = function(cwd,filename,cb) {
  * @param cb run when buildtools exits
  */
 buildtools.compile = function(cwd,filename,version,cb) {
-    if (cb == undefined) {
-        cb = version;
-        version = "latest";
-    }
-
     // Start BuildTools process
     var BuildToolsProc = spawn('java', [
         '-jar', filename,
@@ -59,5 +55,32 @@ buildtools.compile = function(cwd,filename,version,cb) {
     // Broadcast when finished
     BuildToolsProc.on('exit', cb);
 };
+
+buildtools.run = function (cb) {
+    async.series([
+        function (callback) {
+            console.log("Downloading latest buildtools".notification);
+            buildtools.download(config.buildtools.path, config.buildtools.FileName, function () {
+                console.log("BuildTools has been downloaded".notification);
+                callback();
+            });
+        },
+        function (callback) {
+            buildtools.compile(config.buildtools.path, config.buildtools.FileName, "latest", function () {
+                console.log("Server has been compiled".notification);
+
+                fs.readdir(config.buildtools.path, function (err, files) {
+                    var fileName = files.find(function(element){
+                        return element.indexOf("spigot") !== -1;
+                    });
+                    fs.createReadStream(config.buildtools.path + fileName).pipe(fs.createWriteStream(config.minecraftserv.path + config.minecraftserv.FileName));
+                    console.log();
+                    callback();
+                });
+
+            });
+        }
+    ], cb);
+}
 
 module.exports = buildtools;
