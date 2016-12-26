@@ -9,11 +9,17 @@ Instalation of SpigotBabySitter is extremely easy. First you will need to have N
 After you have NodeJS and npm installed, you can clone SpigotBabySitter.   
 ```git clone https://github.com/robinp7720/SpigotBabySitter.git ~/SpigotBabySitter```   
 Now you need to install the (rather large amount of) dependancies for SpigotBabySitter using npm.   
-```cd ~/SpigotBabySitter; npm install```   
+```
+cd ~/SpigotBabySitter; npm install
+```   
 That was it! You now have SpigotBabySitter installed. You can launch it with the following command:   
-```cd ~/SpigotBabySitter; node .```
-Now you just need to compile Spigot, to do this, run the following command while SpigotBabySitter is running"   
-```!recompile```
+```
+cd ~/SpigotBabySitter; node . 
+```
+Now you just need to compile Spigot, to do this, run the following command while SpigotBabySitter is running:   
+```
+!recompile
+```
 
 ## Great, I installed it! How do I use it?
 ### Plugin manager:
