@@ -12,6 +12,7 @@ var backupManager = {
 
     "defaultItems": ["worlds","plugins","settings","server"],
     "useTar": true,
+    "compress": false,
 
     "setConfig": function(config) {
         this.serverDir = path.normalize(config.minecraftserv.path);
@@ -22,6 +23,7 @@ var backupManager = {
 
         this.defaultItems = config.backup.defaultItems;
         this.useTar = config.backup.useTar;
+        this.compress = config.backup.compress;
     },
 
     "backup": function(items,cb) {
@@ -56,9 +58,13 @@ var backupManager = {
                 var fileName = backupManager.backupDir+"/settings/"+new Date().getTime() + ".tar.gz";
                 var path = backupManager.settingsDir;
             }
+            var args = '-cf';
+            if (this.compress) {
+                args = '-czf';
+            }
 
             var tarProc = spawn('tar', [
-                '-czf',
+                args,
                 fileName,
                 path
             ]);

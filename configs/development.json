@@ -37,7 +37,8 @@
       "settings",
       "server"
     ],
-    "useTar": true
+    "useTar": true,
+    "compress": false
   },
   "schedule": [
     {
