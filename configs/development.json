@@ -1,14 +1,4 @@
 {
-  "rest": {
-    "server" : {
-      "port": 8080
-    },
-    "authentication": {
-      "username": {
-        "password": "password"
-      }
-    }
-  },
   "buildtools": {
     "run": false,
     "path": "files/BuildTools/",
