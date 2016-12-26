@@ -1,7 +1,6 @@
-## SpigotBabySitter, What is it?
-
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b7dae13cf2a44ca0b7e8fa26c30cc976)](https://www.codacy.com/app/Zeyphros/SpigotBabySitter?utm_source=github.com&utm_medium=referral&utm_content=robinp7720/SpigotBabySitter&utm_campaign=badger)
 
+## SpigotBabySitter, What is it?
 SpigotBabySitter is a simple, yet powerful minecraft server wrapper intended to be used with spigot. It implements many features such as a plugin manager, restarts, crash detection, custom directory layouts, automatic backups and restores.
 
 ## This seams awesome! How do I install it?
@@ -41,4 +40,99 @@ This command will list all plugins managed by SpigotBabySitter. It will return t
 
 ```!plugins update```
 
-This will attempt to update all plugins managed by SpigotBabySItter
+This will attempt to update all plugins managed by SpigotBabySitter. Before updating SpigotBabySitter will first check if and update is available to avoid redownloading all plugins again.
+
+### Backup manager:
+#### Manual backups
+Using the command ```!backup``` a backup of the server can be initiated. The items backed up are defined in the config file at ```backup.defaultItems```. To manually choose what to backup during runtime can be done using arguments to the ```!backup``` command. For example, to backup the worlds and plugins you would use ```!backup worlds plugins```.
+#### Automatic backups
+Automatic backups are managed by the scheduler.
+The following entry is a sample entry to backup worlds, plugins, settings and minecraft server files.
+```
+{
+  "action": "backup",
+  "items": [
+    "worlds",
+    "plugins",
+    "settings",
+    "server"
+  ]
+},
+```
+### Scheduler:
+The built in scheduler allows for easy scheduling of periodic tasks such asd restarts, plugins updates and backups. Multiple schedulers can be defined in the config files within the schedule entry.
+A sample scheduler looks like this:
+```
+{
+  "every": 7200,
+  "actions": [
+    {
+      "action": "command",
+      "command": "say Server going for restart in 10 seconds",
+      "wait": 10
+    },
+    {
+      "action": "stop"
+    },
+    {
+      "action": "backup",
+      "items": [
+        "worlds",
+        "plugins",
+        "settings",
+        "server"
+      ]
+    },
+    {
+      "action": "updatePlugins"
+    },
+    {
+      "action": "start"
+    }
+  ]
+}
+```
+The ```every``` item defines how often it is run in seconds. 7200 seconds is equal to 2 hours. ```actions``` defines what should be run. The items are run in order in what they are defined in.
+
+#### Run Server command
+```
+{
+  "action": "command",
+  "command": "say Server going for restart in 10 seconds",
+  "wait": 10
+}
+```
+
+```command``` is the command which will be run and ```wait``` is the time in seconds before running the next item.
+
+#### Stop server
+```
+{
+  "action": "stop"
+}
+```
+#### Start server
+```
+{
+  "action": "start"
+}
+```
+#### Backup
+```
+{
+  "action": "backup",
+  "items": [
+    "worlds",
+    "plugins",
+    "settings",
+    "server"
+  ]
+}
+```
+```items``` defines the items which will be backed up
+#### Update plugins
+```
+{
+  "action": "updatePlugins"
+}
+```
