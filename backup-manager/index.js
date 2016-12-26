@@ -42,25 +42,28 @@ var backupManager = {
         async.eachSeries(items, function iteratee(item, callback) {
             console.log("Backing up "+item+"...");
 
+            var args = '-cf';
+            var fileType = '.tar';
+            if (this.compress) {
+                args = '-czf';
+                fileType = '.tar.gz';
+            }
+
             if (item == "plugins") {
-                var fileName = backupManager.backupDir+"/plugins/"+new Date().getTime() + ".tar.gz";
+                var fileName = backupManager.backupDir+"/plugins/"+new Date().getTime() + fileType;
                 var path = backupManager.pluginsDir;
             }
             else if (item == "worlds") {
-                var fileName = backupManager.backupDir+"/worlds/"+new Date().getTime() + ".tar.gz";
+                var fileName = backupManager.backupDir+"/worlds/"+new Date().getTime() + fileType;
                 var path = backupManager.worldsDir;
             }
             else if (item == "server") {
-                var fileName = backupManager.backupDir+"/MinecraftServer/"+new Date().getTime() + ".tar.gz";
+                var fileName = backupManager.backupDir+"/MinecraftServer/"+new Date().getTime() + fileType;
                 var path = backupManager.serverDir;
             }
             else if (item == "settings") {
-                var fileName = backupManager.backupDir+"/settings/"+new Date().getTime() + ".tar.gz";
+                var fileName = backupManager.backupDir+"/settings/"+new Date().getTime() + fileType;
                 var path = backupManager.settingsDir;
-            }
-            var args = '-cf';
-            if (this.compress) {
-                args = '-czf';
             }
 
             var tarProc = spawn('tar', [
