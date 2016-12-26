@@ -1,6 +1,7 @@
 var EasyZip = require('easy-zip').EasyZip;
 var async = require('async');
 var path = require('path');
+var spawn = require('child_process').spawn;
 
 var backupManager = {
     "pluginsDir": "../files/plugins",
@@ -10,6 +11,7 @@ var backupManager = {
     "backupDir": "../files/backups",
 
     "defaultItems": ["worlds","plugins","settings","server"],
+    "useTar": true,
 
     "setConfig": function(config) {
         this.serverDir = path.normalize(config.minecraftserv.path);
@@ -19,6 +21,7 @@ var backupManager = {
         this.backupDir = path.normalize(config.minecraftserv.backupDir);
 
         this.defaultItems = config.backup.defaultItems;
+        this.useTar = config.backup.useTar;
     },
 
     "backup": function(items,cb) {
@@ -26,6 +29,52 @@ var backupManager = {
             items = this.defaultItems;
         }
 
+        if (this.useTar) {
+            return this.tar(items,cb);
+        }
+
+        this.easyzip(items,cb);
+    },
+
+    "tar": function(items,cb) {
+        async.eachSeries(items, function iteratee(item, callback) {
+            console.log("Backing up "+item+"...");
+
+            if (item == "plugins") {
+                var fileName = backupManager.backupDir+"/plugins/"+new Date().getTime() + ".tar.gz";
+                var path = backupManager.pluginsDir;
+            }
+            else if (item == "worlds") {
+                var fileName = backupManager.backupDir+"/worlds/"+new Date().getTime() + ".tar.gz";
+                var path = backupManager.worldsDir;
+            }
+            else if (item == "server") {
+                var fileName = backupManager.backupDir+"/MinecraftServer/"+new Date().getTime() + ".tar.gz";
+                var path = backupManager.serverDir;
+            }
+            else if (item == "settings") {
+                var fileName = backupManager.backupDir+"/settings/"+new Date().getTime() + ".tar.gz";
+                var path = backupManager.settingsDir;
+            }
+
+            var tarProc = spawn('tar', [
+                '-czf',
+                fileName,
+                path
+            ]);
+
+            tarProc.on('exit', function() {
+                console.log("Backed "+item);
+                callback();
+            });
+        },function() {
+            console.log("Backup finished!");
+            if (cb !== undefined)
+                cb();
+        });
+    },
+
+    "easyzip": function(items,cb) {
         async.eachSeries(items, function iteratee(item, callback) {
             var zip = new EasyZip();
             if (item == "plugins") {

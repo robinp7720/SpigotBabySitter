@@ -36,7 +36,8 @@
       "plugins",
       "settings",
       "server"
-    ]
+    ],
+    "useTar": true
   },
   "schedule": [
     {
