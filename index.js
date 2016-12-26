@@ -233,14 +233,17 @@ function startScheduler(id) {
     var item = config.schedule[id];
     setInterval(function() {
         var actions = item.actions;
+        var AutoRestart = config.minecraftserv.AutoRestart;
         async.eachSeries(actions, function iteratee(action, callback) {
             var ActionType = action.action;
             console.log(ActionType);
 
             if (ActionType == "start") {
+                config.minecraftserv.AutoRestart = AutoRestart;
                 startServer(callback);
             }
             else if (ActionType == "stop") {
+                config.minecraftserv.AutoRestart = false;
                 MinecraftServer.stop(callback);
             }
             else if (ActionType == "updatePlugins") {
