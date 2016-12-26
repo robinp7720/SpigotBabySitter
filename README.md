@@ -1,10 +1,18 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b7dae13cf2a44ca0b7e8fa26c30cc976)](https://www.codacy.com/app/Zeyphros/SpigotBabySitter?utm_source=github.com&utm_medium=referral&utm_content=robinp7720/SpigotBabySitter&utm_campaign=badger)
 
 ## SpigotBabySitter, What is it?
-SpigotBabySitter is a simple, yet powerful minecraft server wrapper intended to be used with spigot. It implements many features such as a plugin manager, restarts, crash detection, custom directory layouts, automatic backups and restores.
+SpigotBabySitter is an extremely easy to use minecraft server wrapper which makes server management a breeze. Automated backups, restarts, timed command execution and plugin management are among the main features. Install plugins from spigot or jenkins with a single command and update all installed plugins with another. SpigotBabySitter will check if new versions are avaliable and install them with a single command. Automated downloaing of BuildTools and compilation of Spigot is also an integrated feature.
 
 ## This seams awesome! How do I install it?
-**When this hasn't been written within a month, someone bug me about it**
+Instalation of SpigotBabySitter is extremely easy. First you will need to have NodeJS and NPM installed. You can follow the official NodeJS installation guide here: https://nodejs.org/en/download/package-manager/
+
+After you have NodeJS and npm installed, you can clone SpigotBabySitter.   
+```git clone https://github.com/robinp7720/SpigotBabySitter.git ~/SpigotBabySitter```   
+Now you need to install the (rather large amount of) dependancies for SpigotBabySitter using npm.   
+```cd ~/SpigotBabySitter; npm install```   
+That was it! You now have SpigotBabySitter installed. You can launch it with the following command:   
+```cd ~/SpigotBabySitter; node .```
+
 
 ## Great, I installed it! How do I use it?
 ### Plugin manager:
@@ -22,6 +30,8 @@ This example would install the latest build of Stats3 by lolmewn from his build 
 
 The only argument avaliable when using spigot's plugin repos is the plugin name or ID. Using the plugin name is easier by may result in the wrong plugin being downloaded as mulitple plugins can be uploaded using the same name. When multiple plugins are found with the name, it will use the first plugin found. To be specific about the plugin you wish to install, use the plugin id which can be retrieved from the url of the resource.
 
+Huge shoutout to Spiget (https://spiget.org/) for the Spigot resource api. The plugins are still downloaded from spigot's resource page using the nodejs WebScrapper module to circumvate cloudflare's DOS protection.
+
 ##### Bukkit - NOT YET IMPLEMENTED
 
 ```!install bukkit <PluginName>```
@@ -30,7 +40,7 @@ The only argument avaliable when using spigot's plugin repos is the plugin name 
 
 ```!install bukkit lolmewnstats```
 
-This example would install the latest release of Stats3 by lolmewn from bukkit using bukget.
+This example would install the latest release of Stats3 by lolmewn from bukkit. Due to bukget's dicontinuation, plugin downloading from bukkit may not happen in the near future.
 
 #### Plugin management
 
