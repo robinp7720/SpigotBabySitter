@@ -23,7 +23,7 @@ Now you just need to compile Spigot, to do this, run the following command while
 !recompile
 ```
 Great, now spigot has been compiled! Everything is ready for use. You can always rerun ```!recompile``` to update spigot to the latest version.
-Now you need to start your minecraft server. Just use ```!start``` for this. ```!stop``` to stop the server and ```restart``` to do a restart.
+Now you need to start your minecraft server. Just use ```!start``` for this. ```!stop``` to stop the server and ```!restart``` to do a restart.
 
 ## Great, I installed it! How do I use it?
 ### Plugin manager:
