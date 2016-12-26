@@ -54,6 +54,9 @@ server.stop = function(cb) {
     if (server.proc != null) {
         server.proc.stdin.write('stop\n');
         if (cb != undefined) {
+            eventEmitter.once("stop", function() {
+               server.proc = null;
+            });
             eventEmitter.once("stop", cb);
         }
     } else {
