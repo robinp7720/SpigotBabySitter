@@ -19,15 +19,14 @@ var buildtools = {};
  * @param cb Run when downloaded
  */
 buildtools.download = function(cwd,filename,cb) {
-    request('https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar', function() {
-        cb();
-    }).pipe(fs.createWriteStream(cwd+filename))
+    request('https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar', cb).pipe(fs.createWriteStream(cwd+filename))
 };
 
 /**
  *
  * @param cwd Working directory of BuiltTools
  * @param filename Filename of buildtools jar
+ * @param version Minecraft version to build spigot for
  * @param cb run when buildtools exits
  */
 buildtools.compile = function(cwd,filename,version,cb) {
@@ -58,9 +57,7 @@ buildtools.compile = function(cwd,filename,version,cb) {
     });
 
     // Broadcast when finished
-    BuildToolsProc.on('exit', function() {
-        cb();
-    });
+    BuildToolsProc.on('exit', cb);
 };
 
 module.exports = buildtools;
