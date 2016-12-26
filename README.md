@@ -12,7 +12,8 @@ Now you need to install the (rather large amount of) dependancies for SpigotBaby
 ```cd ~/SpigotBabySitter; npm install```   
 That was it! You now have SpigotBabySitter installed. You can launch it with the following command:   
 ```cd ~/SpigotBabySitter; node .```
-
+Now you just need to compile Spigot, to do this, run the following command while SpigotBabySitter is running"   
+```!recompile```
 
 ## Great, I installed it! How do I use it?
 ### Plugin manager:
