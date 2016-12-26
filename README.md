@@ -79,7 +79,7 @@ The following entry is a sample entry to backup worlds, plugins, settings and mi
 },
 ```
 ### Scheduler:
-The built in scheduler allows for easy scheduling of periodic tasks such asd restarts, plugins updates and backups. Multiple schedulers can be defined in the config files within the schedule entry.
+The built in scheduler allows for easy scheduling of periodic tasks such as restarts, plugins updates and backups. Multiple schedulers can be defined in the config files within the schedule entry.
 A sample scheduler looks like this:
 ```
 {
