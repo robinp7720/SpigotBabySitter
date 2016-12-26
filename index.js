@@ -196,7 +196,8 @@ var wrapperCommands = {
     "backup": function(args) {
         var backup = require('./backup-manager/index');
         backup.setConfig(config);
-        backup.backup(['worlds','server','settings','plugins']);
+        args.shift(); // Remove first items from array as this is the command.
+        backup.backup(args);
     }
 
 };

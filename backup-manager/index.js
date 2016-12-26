@@ -9,15 +9,23 @@ var backupManager = {
     "serverDir": "../files/MinecraftServer",
     "backupDir": "../files/backups",
 
+    "defaultItems": ["worlds","plugins","settings","server"],
+
     "setConfig": function(config) {
         this.serverDir = path.normalize(config.minecraftserv.path);
         this.pluginsDir = path.normalize(this.serverDir + config.minecraftserv.pluginsDir);
         this.worldsDir = path.normalize(this.serverDir + config.minecraftserv.worldsDir);
         this.settingsDir = path.normalize(this.serverDir + config.minecraftserv.configDirectory);
         this.backupDir = path.normalize(config.minecraftserv.backupDir);
+
+        this.defaultItems = config.backup.defaultItems;
     },
 
     "backup": function(items,cb) {
+        if (items.length == 0) {
+            items = this.defaultItems;
+        }
+
         async.eachSeries(items, function iteratee(item, callback) {
             var zip = new EasyZip();
             if (item == "plugins") {
