@@ -57,7 +57,7 @@ server.stop = function(cb) {
             eventEmitter.once("stop", cb);
         }
     } else {
-        console.log("Server is not running")
+        console.log("Server is not running");
         if (cb != undefined)
             cb();
     }

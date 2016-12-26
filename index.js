@@ -10,11 +10,11 @@ var colors = require('colors');
 // Set color theme
 colors.setTheme(config.colors);
 
-
 var MinecraftServer = require('./minecraftserver-integration/server.js');
 
 // This line make nodejs not verify ssl certs. I have experienced issues with some jenkins servers which use Lets Encrypt certs which aren't supported by NodeJS
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.env.NODE_DEBUG="fs";
 
 
 // Set encoding type of inputs
@@ -164,12 +164,18 @@ var wrapperCommands = {
         var source = args[1];
         if (source == "jenkins") {
             var JenkinsPluginManager = require('./plugin-manager/jenkins');
-            JenkinsPluginManager.install(args[2],args[3],null,config.minecraftserv.path+config.minecraftserv.pluginsDir, function() {
+            JenkinsPluginManager.install(args[2],args[3],null,config.minecraftserv.path+config.minecraftserv.pluginsDir, function(err) {
+                if (err) {
+                    console.log("Plugin installation failed".error)
+                }
                 console.log("Plugin installed!".notification)
             });
         } else if (source == "spigot") {
             var SpigotPluginManager = require('./plugin-manager/spigot');
-            SpigotPluginManager.install(args[2],config.minecraftserv.path+config.minecraftserv.pluginsDir, function() {
+            SpigotPluginManager.install(args[2],config.minecraftserv.path+config.minecraftserv.pluginsDir, function(err,test) {
+                if (err) {
+                    return console.log("Plugin installation failed".error)
+                }
                 console.log("Plugin installed!".notification)
             });
         }
@@ -183,10 +189,16 @@ var wrapperCommands = {
             }
         } else if (args[1] == "update") {
             UpdatePlugins(function() {
-                console.log("Plugin update finished");
+                console.log("Plugin update ffinished".notification);
             })
         }
+    },
+    "backup": function(args) {
+        var backup = require('./backup-manager/index');
+        backup.setConfig(config);
+        backup.backup(['worlds','server','settings','plugins']);
     }
+
 };
 
 
@@ -232,6 +244,11 @@ function startScheduler(id) {
                 setTimeout(function () {
                     callback()
                 }, action.wait * 1000);
+            }
+            else if (ActionType == "backup") {
+                var backup = require('./backup-manager/index');
+                backup.setConfig(config);
+                backup.backup(action.items,callback);
             }
             else {
                 setTimeout(function () {

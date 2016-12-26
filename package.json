@@ -5,6 +5,7 @@
     "async": "^2.0.1",
     "cloudscraper": "latest",
     "colors": "^1.1.2",
+    "easy-zip": "0.0.4",
     "jenkins-api": "latest",
     "request": "^2.75.0",
     "restify": "^4.1.1",

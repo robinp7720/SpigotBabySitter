@@ -53,7 +53,7 @@ var SpigotPluginManager = {
                 } else {
                     console.log(plugin['name'] + " uses an external source. It cannot be downloaded")
                 }
-                cb();
+                cb(true);
             }
         });
     },
@@ -110,7 +110,7 @@ var SpigotPluginManager = {
                 } else {
                     console.log(plugin['name'] + " uses an external source. It cannot be downloaded")
                 }
-                cb();
+                cb(true);
             }
         });
     }

@@ -23,7 +23,8 @@
     "AutoStart": false,
     "worldsDir": "../worlds/",
     "pluginsDir": "../plugins/",
-    "configDirectory": "../settings/"
+    "configDirectory": "../settings/",
+    "backupDir": "files/backups/"
   },
   "colors": {
     "silly": "rainbow",
@@ -56,7 +57,7 @@
           "items": [
             "worlds",
             "plugins",
-            "configs",
+            "settings",
             "server"
           ]
         },
