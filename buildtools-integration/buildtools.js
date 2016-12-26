@@ -1,7 +1,7 @@
 var request = require('request');
 var fs = require('fs');
 
-var config  = require('../configs/development.json');
+var config  = require('../configs/config.json');
 
 // Allow for color coded output
 var colors = require('colors');

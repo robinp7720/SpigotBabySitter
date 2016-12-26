@@ -3,7 +3,7 @@ var async = require('async');
 var crypto = require('crypto');
 var moment = require('moment');
 
-var config = require('./configs/development.json');
+var config = require('./configs/config.json');
 
 // Allow for color coded output
 var colors = require('colors');

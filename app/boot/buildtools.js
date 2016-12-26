@@ -1,6 +1,6 @@
 var async = require('async');
 var BuildTools = require('../../buildtools-integration/buildtools.js');
-var config  = require('../../configs/development.json');
+var config  = require('../../configs/config.json');
 var fs = require('fs');
 
 // Allow for color coded output
