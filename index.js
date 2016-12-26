@@ -1,6 +1,7 @@
 var fs = require('fs');
 var async = require('async');
 var crypto = require('crypto');
+var moment = require('moment');
 
 var config = require('./configs/development.json');
 
@@ -185,11 +186,16 @@ var wrapperCommands = {
             var plugins = require("./configs/plugins.json");
             for (var i in plugins) {
                 var plugin = plugins[i];
-                console.log(plugin);
+                if (plugin.source == "jenkins") {
+                    var formatted = moment( plugin.timestamp ).format("Y/M/D hh:MM:ss");
+                    console.log(plugin.job.blue + " from ".blue +plugin.repo.red + " Build time: ".blue + formatted);
+                } else {
+                    console.log(plugin.name.blue + " from ".blue +plugin.source.red + " Version: ".blue + plugin.version);
+                }
             }
         } else if (args[1] == "update") {
             UpdatePlugins(function() {
-                console.log("Plugin update ffinished".notification);
+                console.log("Plugin update finished".notification);
             })
         }
     },

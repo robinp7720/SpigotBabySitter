@@ -7,6 +7,7 @@
     "colors": "^1.1.2",
     "easy-zip": "0.0.4",
     "jenkins-api": "latest",
+    "moment": "^2.17.1",
     "request": "^2.75.0",
     "restify": "^4.1.1",
     "restify-cookies": "^0.2.2",
