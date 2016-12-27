@@ -4,7 +4,8 @@
 SpigotBabySitter is an extremely easy to use minecraft server wrapper which makes server management a breeze. Automated backups, restarts, timed command execution and plugin management are among the main features. Install plugins from spigot or jenkins with a single command and update all installed plugins with another. SpigotBabySitter will check if new versions are avaliable and install them with a single command. Automated downloaing of BuildTools and compilation of Spigot is also an integrated feature.
 
 ## This seams awesome! How do I install it?
-Instalation of SpigotBabySitter is extremely easy. First you will need to have NodeJS and NPM installed. You can follow the official NodeJS installation guide here: https://nodejs.org/en/download/package-manager/
+### Linux, Mac and GIT for windows
+Instalation of SpigotBabySitter is extremely easy. First you will need to have NodeJS and NPM installed. You can follow the official NodeJS installation guide here if you're on linux https://nodejs.org/en/download/package-manager/. I you're on windows or mac, install nodejs from here: https://nodejs.org/en/download/.
 
 After you have NodeJS and npm installed, you can clone SpigotBabySitter.   
 ```
@@ -24,6 +25,23 @@ Now you just need to compile Spigot, to do this, run the following command while
 ```
 Great, now spigot has been compiled! Everything is ready for use. You can always rerun ```!recompile``` to update spigot to the latest version.
 Now you need to start your minecraft server. Just use ```!start``` for this. ```!stop``` to stop the server and ```!restart``` to do a restart.
+
+### Windows without GIT
+First download and install NodeJS and NPM from here: https://nodejs.org/en/download/.
+Then download https://github.com/robinp7720/SpigotBabySitter/archive/master.zip to where you wish to install SpigotBabySitter. Now open powershell to install all the dependancies using npm:
+```
+npm install
+```
+Now you have SpigotBabySitter installed! You can now run SpigotBabySitter using
+```
+nodejs index.js
+```
+Since this is a new install, you will have to compile spigot. Do this with the following command:
+```
+!recompile
+```
+And to start the spigot server, use ```!start```, to stop the server use ```!stop``` and to restart the server use ```!restart```
+
 
 ## Great, I installed it! How do I use it?
 ### Plugin manager:
