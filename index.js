@@ -234,7 +234,7 @@ process.stdin.on('readable', function () {
     }
 });
 
-function runScriptSeries(script) {
+function runScriptSeries(script,cb) {
     var AutoRestart = config.minecraftserv.AutoRestart;
     async.eachSeries(script, function iteratee(action, callback) {
         var ActionType = action.action;
@@ -267,7 +267,8 @@ function runScriptSeries(script) {
             }, 1000);
         }
     },function() {
-
+        if (cb)
+            cb();
     });
 }
 
