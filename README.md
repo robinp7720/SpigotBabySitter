@@ -3,9 +3,9 @@
 ## SpigotBabySitter, What is it?
 SpigotBabySitter is an extremely easy to use minecraft server wrapper which makes server management a breeze. Automated backups, restarts, timed command execution and plugin management are among the main features. Install plugins from spigot or jenkins with a single command and update all installed plugins with another. SpigotBabySitter will check if new versions are avaliable and install them with a single command. Automated downloaing of BuildTools and compilation of Spigot is also an integrated feature.
 
-## This seams awesome! How do I install it?
+## This seems awesome! How do I install it?
 ### Linux, Mac and GIT for windows
-Instalation of SpigotBabySitter is extremely easy. First you will need to have NodeJS and NPM installed. You can follow the official NodeJS installation guide here if you're on linux https://nodejs.org/en/download/package-manager/. I you're on windows or mac, install nodejs from here: https://nodejs.org/en/download/.
+Installation of SpigotBabySitter is extremely easy. First you will need to have NodeJS and NPM installed. You can follow the official NodeJS installation guide here if you're on linux https://nodejs.org/en/download/package-manager/. If you're on windows or mac, install nodejs from here: https://nodejs.org/en/download/.
 
 After you have NodeJS and npm installed, you can clone SpigotBabySitter.   
 ```
@@ -28,7 +28,7 @@ Now you need to start your minecraft server. Just use ```!start``` for this. ```
 
 ### Windows without GIT
 First download and install NodeJS and NPM from here: https://nodejs.org/en/download/.
-Then download https://github.com/robinp7720/SpigotBabySitter/archive/master.zip to where you wish to install SpigotBabySitter and unzip the folder. Now open powershell, navigate to unzipped directory the to install all the dependancies using npm:
+Then download https://github.com/robinp7720/SpigotBabySitter/archive/master.zip to where you wish to install SpigotBabySitter and unzip the folder. Now open powershell, navigate to unzipped directory, then to install all the dependancies using npm:
 ```
 npm install
 ```
@@ -57,9 +57,9 @@ This example would install the latest build of Stats3 by lolmewn from his build 
 ##### Spigot
 ```!install spigot <PluginName/Id>```
 
-The only argument avaliable when using spigot's plugin repos is the plugin name or ID. Using the plugin name is easier by may result in the wrong plugin being downloaded as mulitple plugins can be uploaded using the same name. When multiple plugins are found with the name, it will use the first plugin found. To be specific about the plugin you wish to install, use the plugin id which can be retrieved from the url of the resource.
+The only argument avaliable when using spigot's plugin repos is the plugin name or ID. Using the plugin name is easier but may result in the wrong plugin being downloaded as mulitple plugins can be uploaded using the same name. When multiple plugins are found with the name, it will use the first plugin found. To be specific about the plugin you wish to install, use the plugin id which can be retrieved from the url of the resource.
 
-Huge shoutout to Spiget (https://spiget.org/) for the Spigot resource api. The plugins are still downloaded from spigot's resource page using the nodejs WebScrapper module to circumvate cloudflare's DOS protection.
+Huge shoutout to Spiget (https://spiget.org/) for the Spigot resource api. The plugins are still downloaded from spigot's resource page using the nodejs WebScrapper module to circumvent cloudflare's DOS protection.
 
 ##### Bukkit - NOT YET IMPLEMENTED
 
@@ -69,13 +69,13 @@ Huge shoutout to Spiget (https://spiget.org/) for the Spigot resource api. The p
 
 ```!install bukkit lolmewnstats```
 
-This example would install the latest release of Stats3 by lolmewn from bukkit. Due to bukget's dicontinuation, plugin downloading from bukkit may not happen in the near future.
+This example would install the latest release of Stats3 by lolmewn from bukkit. Due to bukget's discontinuation, plugin downloading from bukkit may not happen in the near future.
 
 #### Plugin management
 
 ```!plugins list```
 
-This command will list all plugins managed by SpigotBabySitter. It will return the source from where they were downloaded from aswell.
+This command will list all plugins managed by SpigotBabySitter. It will return the source from where they were downloaded from as well.
 
 ```!plugins update```
 
