@@ -252,9 +252,13 @@ function runScriptSeries(script,cb) {
         }
         else if (ActionType == "command") {
             MinecraftServer.exec(action.command);
-            setTimeout(function () {
-                callback()
-            }, action.wait * 1000);
+            if (action.wait) {
+                setTimeout(function () {
+                    callback()
+                }, action.wait * 1000);
+            } else {
+                callback();
+            }
         }
         else if (ActionType == "backup") {
             var backup = require('./backup-manager/index');
