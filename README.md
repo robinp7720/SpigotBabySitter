@@ -28,7 +28,7 @@ Now you need to start your minecraft server. Just use ```!start``` for this. ```
 
 ### Windows without GIT
 First download and install NodeJS and NPM from here: https://nodejs.org/en/download/.
-Then download https://github.com/robinp7720/SpigotBabySitter/archive/master.zip to where you wish to install SpigotBabySitter. Now open powershell to install all the dependancies using npm:
+Then download https://github.com/robinp7720/SpigotBabySitter/archive/master.zip to where you wish to install SpigotBabySitter and unzip the folder. Now open powershell, navigate to unzipped directory the to install all the dependancies using npm:
 ```
 npm install
 ```
