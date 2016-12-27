@@ -4,7 +4,10 @@ var crypto = require('crypto');
 var moment = require('moment');
 
 var config = require('./configs/config.json');
+
+// Load integration for BuildTools and Spigot
 var buildtools = require('./buildtools-integration/buildtools.js');
+var MinecraftServer = require('./minecraftserver-integration/server.js');
 
 // Allow for color coded output
 var colors = require('colors');
@@ -12,37 +15,39 @@ var colors = require('colors');
 // Set color theme
 colors.setTheme(config.colors);
 
-var MinecraftServer = require('./minecraftserver-integration/server.js');
-
 // This line make nodejs not verify ssl certs. I have experienced issues with some jenkins servers which use Lets Encrypt certs which aren't supported by NodeJS
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-process.env.NODE_DEBUG="fs";
-
 
 // Set encoding type of inputs
 process.stdin.setEncoding('utf8');
 
 function startServer(cb) {
-    console.log();
-    console.log("Starting server".notification);
-    console.log('---------------------------------'.notification);
+    if (MinecraftServer.proc == null) {
+        console.log();
+        console.log("Starting server".notification);
+        console.log('---------------------------------'.notification);
 
-    MinecraftServer.start();
+        MinecraftServer.start();
 
-    MinecraftServer.onLog(function (data) {
-        var log = data.toString().replace("\n", "");
-        if (log.indexOf("WARN") > -1)
-            log = log.warn;
-        if (log.indexOf("ERROR") > -1)
-            log = log.error;
-        console.log(log);
-    });
-    MinecraftServer.onErr(function (data) {
-        console.log(data.toString().replace("\n", "").error);
-    });
+        MinecraftServer.onLog(function (data) {
+            var log = data.toString().replace("\n", "");
+            if (log.indexOf("WARN") > -1)
+                log = log.warn;
+            if (log.indexOf("ERROR") > -1)
+                log = log.error;
+            console.log(log);
+        });
+        MinecraftServer.onErr(function (data) {
+            console.log(data.toString().replace("\n", "").error);
+        });
 
-    if (cb !== undefined)
+        if (cb !== undefined)
+            cb();
+    }
+    else {
+        console.log("Server already running".error);
         cb();
+    }
 }
 
 function setupMinecraftServer(callback) {
@@ -229,46 +234,50 @@ process.stdin.on('readable', function () {
     }
 });
 
+function runScriptSeries(script) {
+    var AutoRestart = config.minecraftserv.AutoRestart;
+    async.eachSeries(script, function iteratee(action, callback) {
+        var ActionType = action.action;
+
+        if (ActionType == "start") {
+            config.minecraftserv.AutoRestart = AutoRestart;
+            startServer(callback);
+        }
+        else if (ActionType == "stop") {
+            config.minecraftserv.AutoRestart = false;
+            MinecraftServer.stop(callback);
+        }
+        else if (ActionType == "updatePlugins") {
+            UpdatePlugins(callback);
+        }
+        else if (ActionType == "command") {
+            MinecraftServer.exec(action.command);
+            setTimeout(function () {
+                callback()
+            }, action.wait * 1000);
+        }
+        else if (ActionType == "backup") {
+            var backup = require('./backup-manager/index');
+            backup.setConfig(config);
+            backup.backup(action.items,callback);
+        }
+        else {
+            setTimeout(function () {
+                callback()
+            }, 1000);
+        }
+    },function() {
+
+    });
+}
+
 function startScheduler(id) {
     console.log("Starting scheduler ".notification+id.notification);
     var item = config.schedule[id];
     setInterval(function() {
         var actions = item.actions;
-        var AutoRestart = config.minecraftserv.AutoRestart;
-        async.eachSeries(actions, function iteratee(action, callback) {
-            var ActionType = action.action;
-            console.log(ActionType);
+        runScriptSeries(actions)
 
-            if (ActionType == "start") {
-                config.minecraftserv.AutoRestart = AutoRestart;
-                startServer(callback);
-            }
-            else if (ActionType == "stop") {
-                config.minecraftserv.AutoRestart = false;
-                MinecraftServer.stop(callback);
-            }
-            else if (ActionType == "updatePlugins") {
-                UpdatePlugins(callback);
-            }
-            else if (ActionType == "command") {
-                MinecraftServer.exec(action.command);
-                setTimeout(function () {
-                    callback()
-                }, action.wait * 1000);
-            }
-            else if (ActionType == "backup") {
-                var backup = require('./backup-manager/index');
-                backup.setConfig(config);
-                backup.backup(action.items,callback);
-            }
-            else {
-                setTimeout(function () {
-                    callback()
-                }, 1000);
-            }
-        },function() {
-
-        });
     },item.every*1000);
 }
 
