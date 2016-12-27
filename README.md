@@ -53,7 +53,7 @@ And to start the spigot server, use ```!start```, to stop the server use ```!sto
 
 ```!install jenkins http://ci.lolmewn.nl Stats```
 
-This example would install the latest build of Stats3 by lolmewn from his build server. It's an awesome plugin, please check it out!
+This example would install the latest build of Stats3 by lolmewn from his build server. It's an awesome plugin, please check it out! Please note that I have no affiliation with lolmewn or lolmewnStats. I only maintain a WebStats interface which is compatible with the database structure used by lolmewnStats.
 ##### Spigot
 ```!install spigot <PluginName/Id>```
 
