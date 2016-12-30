@@ -265,6 +265,11 @@ function runScriptSeries(script,cb) {
             backup.setConfig(config);
             backup.backup(action.items,callback);
         }
+        else if (ActionType == "recompile") {
+            buildtools.run(function() {
+                callback();
+            });
+        }
         else {
             setTimeout(function () {
                 callback()
