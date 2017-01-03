@@ -15,30 +15,39 @@ server.FileName = "server.jar";
 server.maxRam = "1G";
 server.minRam = "1G";
 
+server.host = "";
+server.port = 25565;
+
+server.maxPlayers = 20;
+
 server.worldsDir = "../worlds/";
 server.pluginsDir = "../plugins/";
 server.configDirectory = "../settings/";
 
 
 server.start = function(cb) {
-    if (server.proc == null) {
-        server.proc = spawn('java', [
+    if (this.proc === null) {
+        var _this = this;
+        _this.proc = spawn('java', [
             '-Dcom.mojang.eula.agree=true',
-            '-Xms' + server.minRam,
-            '-Xmx' + server.maxRam,
-            '-jar', server.FileName,
-            '--world-dir', server.worldsDir,
-            '--plugins', server.pluginsDir,
-            '--bukkit-settings', server.configDirectory + "bukkit.yml",
-            '--commands-settings', server.configDirectory + "commands.yml",
-            '--config', server.configDirectory + "config.yml",
-            '--spigot-settings', server.configDirectory + "spigot.yml"
+            '-Xms' + _this.minRam,
+            '-Xmx' + _this.maxRam,
+            '-jar', _this.FileName,
+            '--world-dir', _this.worldsDir,
+            '--plugins', _this.pluginsDir,
+            '--bukkit-settings', _this.configDirectory + "bukkit.yml",
+            '--commands-settings', _this.configDirectory + "commands.yml",
+            '--config', _this.configDirectory + "config.yml",
+            '--spigot-settings', _this.configDirectory + "spigot.yml",
+            '--host', _this.host,
+            '--port', _this.port,
+            '--max-players', _this.maxPlayers
         ], {
-            cwd: server.path
+            cwd: _this.path
         });
 
-        server.proc.on('exit', function () {
-            server.proc = null;
+        _this.proc.on('exit', function () {
+            _this.proc = null;
             eventEmitter.emit('stop');
         });
 
@@ -51,17 +60,18 @@ server.start = function(cb) {
 };
 
 server.stop = function(cb) {
-    if (server.proc != null) {
+    var _this = this;
+    if (this.proc !== null) {
         server.proc.stdin.write('stop\n');
-        if (cb != undefined) {
+        if (cb !== undefined) {
             eventEmitter.once("stop", function() {
-               server.proc = null;
+               _this.proc = null;
             });
             eventEmitter.once("stop", cb);
         }
     } else {
         console.log("Server is not running");
-        if (cb != undefined)
+        if (cb !== undefined)
             cb();
     }
 };
@@ -80,14 +90,14 @@ server.removeListener = function(event, handler) {
 };
 
 server.onLog = function(cb) {
-    server.proc.stdout.on('data', cb);
+    this.proc.stdout.on('data', cb);
 };
 server.onErr = function(cb) {
-    server.proc.stderr.on('data', cb);
+    this.proc.stderr.on('data', cb);
 };
 
 server.exec = function(cmd) {
-    if (server.proc != null) {
+    if (this.proc != null) {
         server.proc.stdin.write(cmd + '\n');
     } else {
         console.log("Server is not running")

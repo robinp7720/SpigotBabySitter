@@ -9,8 +9,15 @@ var config = require('./configs/config.json');
 var buildtools = require('./buildtools-integration/buildtools.js');
 var MinecraftServer = require('./minecraftserver-integration/server.js');
 
+// Load alerts system
+var alerts = require('./alerts/index');
+
 // Allow for color coded output
 var colors = require('colors');
+
+
+// Load fakeServer module to allow for notifications/alerts to players when server is down.
+var fakeServer = require('./fakeServer/index');
 
 // Set color theme
 colors.setTheme(config.colors);
@@ -50,20 +57,52 @@ function startServer(cb) {
     }
 }
 
+function startFakeServer() {
+    fakeServer.maxPlayers = config.minecraftserv.maxPlayers;
+    fakeServer.host = config.minecraftserv.host;
+    fakeServer.port = config.minecraftserv.port;
+
+    fakeServer.dimension = config.fakeServer.dimension;
+    fakeServer.gameMode = config.fakeServer.gameMode;
+    fakeServer.difficulty = config.fakeServer.difficulty;
+
+    fakeServer.joinMessage = config.fakeServer.joinMessage;
+
+    console.log("Starting fake server".notification);
+    console.log('---------------------------------'.notification);
+    fakeServer.start();
+}
+
+function stopFakeServer() {
+    console.log("stopping fake server".notification);
+    console.log('---------------------------------'.notification);
+    fakeServer.stop();
+}
+
 function setupMinecraftServer(callback) {
 
     console.log("Setting up server wrapper".notification);
 
     // Setup minecraft server
+    // Set all directories where minecraft server files will be stored
     MinecraftServer.path = config.minecraftserv.path;
     MinecraftServer.FileName = config.minecraftserv.FileName;
-    MinecraftServer.pluginsDir = config.minecraftserv.pluginsDir;
-    MinecraftServer.worldsDir = config.minecraftserv.worldsDir;
-    MinecraftServer.configDirectory = config.minecraftserv.configDirectory;
+    MinecraftServer.pluginsDir = config.minecraftserv.pluginsDir;           // This path is relative to server jar path
+    MinecraftServer.worldsDir = config.minecraftserv.worldsDir;             // This path is relative to server jar path
+    MinecraftServer.configDirectory = config.minecraftserv.configDirectory; // This path is relative to server jar path
+
+    // Set ram options
     MinecraftServer.maxRam = config.minecraftserv.maxRam;
     MinecraftServer.minRam = config.minecraftserv.minRam;
 
+    // Set network options
+    MinecraftServer.host = config.minecraftserv.host;
+    MinecraftServer.port = config.minecraftserv.port;
+
+    MinecraftServer.maxPlayers = config.minecraftserv.maxPlayers;
+
     MinecraftServer.on('start', function () {
+        stopFakeServer();
         console.log("Server has been started successfully".notification)
     });
 
@@ -78,9 +117,32 @@ function setupMinecraftServer(callback) {
                 console.log("Server started automatically".notification)
             });
         }
+
+        if (config.fakeServer.autoStart) {
+            startFakeServer();
+        }
     });
 
     callback();
+}
+
+
+function startScheduler(id) {
+    console.log("Starting scheduler ".notification+id.notification);
+    var item = config.schedule[id];
+    setInterval(function() {
+        var actions = item.actions;
+        runScriptSeries(actions)
+
+    },item.every*1000);
+}
+
+function startAllSchedulers(cb) {
+// Setup scheduler
+    for (var i in config.schedule) {
+        startScheduler(i);
+    }
+    cb();
 }
 
 function UpdatePlugins(cb) {
@@ -114,7 +176,15 @@ async.series([
             callback();
         }
     },
+    function(callback) {
+        // Start alerts system
+        alerts.config = config;
+        alerts.enableServices(config.alerts.services);
+        alerts.start();
+        callback();
+    },
     setupMinecraftServer,
+    startAllSchedulers,
     function (callback) {
         console.log('---------------------------------'.notification);
         console.log("Server preflight finished".notification);
@@ -124,6 +194,9 @@ async.series([
         if (config.minecraftserv.AutoStart) {
             startServer(callback)
         } else {
+            if (config.fakeServer.autoStart) {
+                startFakeServer();
+            }
             callback();
         }
     }
@@ -279,19 +352,4 @@ function runScriptSeries(script,cb) {
         if (cb)
             cb();
     });
-}
-
-function startScheduler(id) {
-    console.log("Starting scheduler ".notification+id.notification);
-    var item = config.schedule[id];
-    setInterval(function() {
-        var actions = item.actions;
-        runScriptSeries(actions)
-
-    },item.every*1000);
-}
-
-// Setup scheduler
-for (var i in config.schedule) {
-    startScheduler(i);
 }
