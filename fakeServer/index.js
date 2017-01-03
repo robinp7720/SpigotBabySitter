@@ -29,6 +29,8 @@ fakeServer.start = function() {
         motd: _this.motd
     });
 
+    this.server.maxPlayers = this.maxPlayers;
+
     this.server.on('login', function(client) {
         client.write('login', {
             entityId: client.id,
@@ -60,6 +62,7 @@ fakeServer.start = function() {
 
 fakeServer.stop = function(cb) {
     this.server.close();
+    this.server = null;
     if (cb)
         cb()
 };
