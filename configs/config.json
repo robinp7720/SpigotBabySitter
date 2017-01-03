@@ -30,7 +30,8 @@
     "dimension": 1,
     "difficulty": 0,
     "joinMessage": "Server is currently rebooting. Check back in a bit",
-    "motd": "Server is currently rebooting. Check back in a bit"
+    "motd": "Server is currently rebooting. Check back in a bit",
+    "allowJoin": false
   },
   "colors": {
     "silly": "rainbow",

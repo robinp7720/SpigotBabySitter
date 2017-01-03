@@ -68,6 +68,7 @@ function startFakeServer() {
 
     fakeServer.joinMessage = config.fakeServer.joinMessage;
     fakeServer.motd = config.fakeServer.motd;
+    fakeServer.allowJoin = config.fakeServer.allowJoin;
 
     console.log();
     console.log("Starting fake server".notification);
