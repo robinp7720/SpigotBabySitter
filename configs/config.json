@@ -19,7 +19,6 @@
     "AutoRestart": false,
     "AutoStart": false,
 
-
     "worldsDir": "../worlds/",
     "pluginsDir": "../plugins/",
     "configDirectory": "../settings/",
