@@ -8,12 +8,12 @@ fakeServer.maxPlayers = 20;
 fakeServer.gameMode = 1;
 fakeServer.dimension = 1;
 fakeServer.difficulty = 0;
+fakeServer.motd = "Running SpigotBabySitter temp server right now";
 
 fakeServer.host = "0.0.0.0";
 fakeServer.port = 25565;
 
 fakeServer.version = "1.11.2";
-
 
 fakeServer.joinMessage = "Running SpigotBabySitter temp server right now";
 
@@ -25,7 +25,8 @@ fakeServer.start = function() {
         host: _this.host,       // optional
         port: _this.port,           // optional
         version: _this.version,
-        maxPlayers: _this.maxPlayers
+        maxPlayers: _this.maxPlayers,
+        motd: _this.motd
     });
 
     this.server.on('login', function(client) {

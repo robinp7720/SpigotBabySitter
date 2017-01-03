@@ -29,7 +29,8 @@
     "gameMode": 1,
     "dimension": 1,
     "difficulty": 0,
-    "joinMessage": "Server is currently rebooting. Please wait a few minutes"
+    "joinMessage": "Server is currently rebooting. Check back in a bit",
+    "motd": "Server is currently rebooting. Check back in a bit"
   },
   "colors": {
     "silly": "rainbow",

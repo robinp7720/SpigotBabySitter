@@ -67,7 +67,9 @@ function startFakeServer() {
     fakeServer.difficulty = config.fakeServer.difficulty;
 
     fakeServer.joinMessage = config.fakeServer.joinMessage;
+    fakeServer.motd = config.fakeServer.motd;
 
+    console.log();
     console.log("Starting fake server".notification);
     console.log('---------------------------------'.notification);
     fakeServer.start();
